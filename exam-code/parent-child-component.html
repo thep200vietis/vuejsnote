@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Truyền dữ liệu vào Component Vue.js với props - Example 1 - Allaravel.com</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- use component -->
+    <div class="container mt-2" id="app">
+        <parent-component></parent-component>
+    </div>
+    
+    <!-- parent component -->
+    <template id="parent">
+        <div class="row">
+            <div class="col-12">
+                <child-component v-bind:user-name="userName"></child-component>
+            </div>
+            <div class="col-12">
+                <child-form-component v-bind:user-name="userName" v-on:pass-to-parent="changeUsername"></child-form-component>
+            </div>
+        </div>
+        
+    </template>
+
+    <!-- child component -->
+    <template id="child">
+        <h1>{{ message }} {{ userName }}</h1>
+    </template>
+
+    <!-- child-form component -->
+    <template id="child-form">
+        <div class="row">
+            <div class="col-12">
+                <label for="">Enter your name:</label>
+            </div>
+            <div class="col-12">
+                <input type="text" class="form-control" v-model="name" v-on:input="onEnterNew" style="width: 300px;">
+            </div>
+        </div>
+    </template>
+
+    <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
+    <script type="text/javascript">
+        // parent component
+        Vue.component('parent-component', {
+            template: '#parent',
+            data: function() {
+                return {
+                    userName: 'Thep',
+                }
+            },
+            methods: {
+                changeUsername: function(val) {
+                    this.userName = val
+                }
+            },
+        });
+
+        // child component
+        Vue.component('child-component', {
+            template: '#child',
+            data: function() {
+                return {
+                    message: 'Hello there',
+                }
+            },
+            props: ['userName'],
+        });
+
+        // child-form component
+        Vue.component('child-form-component', {
+            template: '#child-form',
+
+            data: function() {
+                return {
+                    name: this.userName,
+                }
+            },
+            props: ['userName'],
+            methods: {
+                onEnterNew: function(event) {
+                    this.$emit('pass-to-parent', this.name);
+                },
+            }
+        })
+
+        // init instance
+        new Vue({
+            el: '#app',
+        });
+    </script>
+</body>
+</html>

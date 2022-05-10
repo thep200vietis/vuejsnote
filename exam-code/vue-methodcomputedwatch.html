@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-3" id="app">
+        <!-- <button class="btn btn-primary" v-on:click="myComputed">Computed</button>
+        <button class="btn btn-primary" v-on:click="myMethod()">Methods</button> -->
+        <a href="#" v-on:click.prevent="myMethod()">Methods</a>
+        <p v-if="foo">This is foo</p>
+        <p>{{ initHook }}</p>
+        <p>{{ myComputed }}</p>
+        <p class="text-success">{{ state }}</p>
+    </div>
+    <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
+    <script text="text/javascript">
+        new Vue({
+            el: '#app',
+            data: {
+                initHook: '            This is init hook',
+                foo: false,
+                state: 'Normal'
+            },
+
+            computed: {
+                myComputed: function() {
+                    return this.initHook + ' - Computed';
+                }
+            },
+
+            methods: {
+                myMethod: function() {
+                    this.foo = true
+                }
+            },
+
+            watch: {
+                foo: function() {
+                    this.state = 'changed'
+                }
+            }
+        })
+    </script>
+</body>
+</html>
