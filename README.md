@@ -40,40 +40,40 @@
 Được tạo ra nhằm mục đích giảm tối thiểu việc lặp code. Vuejs sử dụng component để tổ chức project. Các component sẽ được tạo ra, gọi tới và render ra màn hình khi vue cần đến chúng. Việc tạo ra và gọi lúc nào là việc của dev.
 ``` js
 - Cấu trúc của một component trong file .vue
-	- template: chứa view của component
-	- script: chứa logic của component 
-	<template></template>
-	<script>
-	export default {
-		name: 'HelloWorld',
-		data: function () {
-				return {
-				msg: "Say hello",
-			}
-		},
-	}
-	</script>
+    - template: chứa view của component
+    - script: chứa logic của component 
+    <template></template>
+    <script>
+    export default {
+        name: 'HelloWorld',
+        data: function () {
+                return {
+                msg: "Say hello",
+            }
+        },
+    }
+    </script>
 ```
 Sau khi một component được tạo chúng ta nhúng chúng vào trong file bằng cách tạo vue instance và khai báo component trong đó, việc cuối cùng `mount` với `DOM` để render ra màn hình.
 ``` js
 - Component được khai báo trong Vue instance
-	new Vue({
-		el: '#app',
-		router,
-		components: { App },
-		template: '<App/>'
-	})
+    new Vue({
+        el: '#app',
+        router,
+        components: { App },
+        template: '<App/>'
+    })
 ```
 Trên đây là cách phổ biến nhất khi làm việc với vuejs khi chúng ta build nguyên một cấu trúc project của vue bằng `npm`. Ngoài ra vẫn còn một số cách sử dụng trực tiếp khác như:
 ``` js
 - Tạo một component và khai báo cục bộ component đó:
-	Vue.component('HelloWorld', {
-		template: '<h1>Hello World</h1>'
-	})
+    Vue.component('HelloWorld', {
+        template: '<h1>Hello World</h1>'
+    })
 
 - Tạo một component và khai báo toàn cục component đó:
-	var com = Vue.component('HelloWorld', {
-			template: '<h1>Hello World</h1>'
+    var com = Vue.component('HelloWorld', {
+        template: '<h1>Hello World</h1>'
 ```
 ### Data component
 Cách khai báo thứ 1 và 2 là như nhau, việc dùng `return` để trả về một thuộc tính sẽ có tác dụng mỗi khi một một instance được gọi nó sẽ trả về một data khác nhau vì vậy mà khi các component được sử dụng lại ở nhiều nơi thì nếu một chỗ thay đổi thuộc tính thì những chỗ khác không bị thay đổi cùng.
@@ -82,50 +82,44 @@ Cách khai báo thuộc tính thứ 3 sẽ làm cho việc thay đổi thuộc t
 ``` js
 - Data chứa các các thuộc tính của một component:
 - Ta có 3 kiểu khai báo data như bên dưới:
-	data: function () {
-			return {
-			msg: "Say hello",
-		}
-	},
+    data: function () {
+        return { msg: "Say hello" }
+    },
 
-	data() {
-			return {
-			msg: "Say hello",
-		}
-	},
+    data() {
+        return { msg: "Say hello" }
+    },
 
-	data: {
-		msg: "Say hello",
-	},
+    data: {msg: "Say hello" },
 ```
 ### LifeCycle Hooks
 ``` js
 - init
-	- beforeCreate()   : Chạy khi init một instance, lúc này data và event vẫn chưa được thiết lập
-	- created()        : Lúc này data và event đã được thiết lập
+    - beforeCreate()   : Chạy khi init một instance, lúc này data và event vẫn chưa được thiết lập
+    - created()        : Lúc này data và event đã được thiết lập
 
 - Link to DOM
-	- beforeMount()    : Chạy khi data và event đã thiết lập tuy nhiên vẫn chưa gắn vào DOM
-	- mounted()        : Chạy khi data và event đã thiết lập và gắn vào DOM
+    - beforeMount()    : Chạy khi data và event đã thiết lập tuy nhiên vẫn chưa gắn vào DOM
+    - mounted()        : Chạy khi data và event đã thiết lập và gắn vào DOM
 
 - Update
-	- beforeUpdate()   : Chạy ngay sau khi đối tượng đã được gắn vào Dom và trước khi rendrr ra màn hình
-	- updated()        : Chạy ngay sau beforeUpdate()
-	- Dữ liệu ở beforeUpdate() và Updated() là như nhau
+    - beforeUpdate()   : Chạy ngay sau khi đối tượng đã được gắn vào Dom và trước khi rendrr ra màn hình
+    - updated()        : Chạy ngay sau beforeUpdate()
+    - Dữ liệu ở beforeUpdate() và Updated() là như nhau
 
 - Destroy
-	- beforeDestroy()  : Trước khi hủy một instance
-	- destroyed()      : Lúc này insrtance đã bị hủy
+    - beforeDestroy()  : Trước khi hủy một instance
+    - destroyed()      : Lúc này insrtance đã bị hủy
 ```
 
 > ## Vue props and $emit
 Props được sử dụng để truyền dữ liệu từ component cha xuống component con, $emit được sử dụng cho mục đích ngược lại.
 ``` js
 - Props:
-	- Thực hiện truyền biến `username` từ component cha sang component con
-	- Lưu ý `v-bind:user-name="userName"` chuyển tên biến sang kebard-case
-	- Parent component:
-		Vue.component('parent-component', {
+    - Thực hiện truyền biến `username` từ component cha sang component con
+    - Lưu ý `v-bind:user-name="userName"` chuyển tên biến sang kebard-case
+    - Parent component:
+        Vue.component('parent-component', {
             template: '#parent',
             data: function() {
                 return {
@@ -133,8 +127,8 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
                 }
             },
         });
-	- Phild component:
-		Vue.component('child-component', {
+    - Phild component:
+        Vue.component('child-component', {
             template: '#child',
             data: function() {
                 return {
@@ -143,14 +137,14 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
             },
             props: ['userName'],
         });
-	- Render:
-		<child-component v-bind:user-name="userName"></child-component>
+    - Render:
+        <child-component v-bind:user-name="userName"></child-component>
 ```
 ``` js
 - $emit:
-	- Component con gửi dữ liệu sang component cha thông qua việc phát đi một event `$emit` kèm theo dữ liệu.
-	- Parent component:
-		Vue.component('parent-component', {
+    - Component con gửi dữ liệu sang component cha thông qua việc phát đi một event `$emit` kèm theo dữ liệu.
+    - Parent component:
+        Vue.component('parent-component', {
             template: '#parent',
             data: function() {
                 return {
@@ -163,8 +157,8 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
                 }
             },
         });
-	- Child component:
-		 Vue.component('child-form-component', {
+    - Child component:
+         Vue.component('child-form-component', {
             template: '#child-form',
 
             data: function() {
@@ -179,36 +173,112 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
                 },
             }
         })
-	- Render:
-		<input type="text" v-model="name" v-on:input="onEnterNew">
-		<child-form-component v-on:pass-to-parent="changeUsername"></child-form-component>
+    - Render:
+        <input type="text" v-model="name" v-on:input="onEnterNew">
+        <child-form-component v-on:pass-to-parent="changeUsername"></child-form-component>
 ```
-> ## Vue Router
+> ## Vue-router
 - **Note:** vuejs sẽ auto option việc cài đặt vue-route, folder mặc định của nó khi init là route và file index.js
 - Build các route và tạo instance cho route rồi sau đó sử dụng vue instance vào file main.js
 ``` js
 - Tạo một instance cho route
-	- `export default new Router({ routes }) `
+    - `export default new Router({ routes }) `
 - router instance được khai báo trong vue instance như sau:
-	new Vue({
-		el: '#app',
-		router,
-		components: { App },
-		template: '<App/>'
-	})
+    new Vue({
+        el: '#app',
+        router,
+        components: { App },
+        template: '<App/>'
+    })
 ```
 ``` js
 - Cấu trúc của một route
-	- `{path: '/home/:id', name:'home.route', component: Home}`
-	- path: set directive cho route
-	- name: tên của route
-	- :id: tham số truyền vào route
-	- component: đối tượng component để render (nhớ import file component vào file nơi mình khai báo và đăng ký route)
+    - `{path: '/home/:id', name:'home.route', component: Home}`
+    - path: set directive cho route
+    - name: tên của route
+    - :id: tham số truyền vào route
+    - component: đối tượng component để render (nhớ import file component vào file nơi mình khai báo và đăng ký route)
 ```
 ``` vue
 - Sử dụng route
-	- sử dụng tag route-link để render link
-	- `<router-link v-bind:to="{name: 'user', params: {id: 4}}">user</router-link>`
+    - sử dụng tag route-link để render link
+    - `<router-link v-bind:to="{name: 'user', params: {id: 4}}">user</router-link>`
 ```
 > ## Vuex
+Khi project trở nên lớn hơn thì các component lồng nhau nhiều hơn và việc chia sẻ dữ liệu trên các component sẽ trở nên rất khó. Sử dụng `vuex` để thực hiện chia sẻ chung các `state` trên các component. Vuex sử dụng duy nhất một cây trạng thái để lưu trữ trạng thái và chia sẻ trên các component.
+```js
+- Cấu trúc của store:
+    - State: Trạng thái cần lưu trữ
+    - Getters: Filter state trước khi lấy
+    - Mutations: Nơi duy nhất thực hiện `update` thay đổi state.
+    - actions: Nơi thưc hiện  `commit` thay đổi dữ liệu từ `mutations`
+- Data flow:
+    - Component gọi `actions` để thay đổi dữ liệu thông qua `dispatch`, `actions` được gọi sẽ thực hiện `commit` của `mutations` tương ứng, `mutations` sẽ thực hiện `update` dữ liệu trên state đã được khai báo
+    - Cần tới `actions` để thực hiện `commit` thay đổi dữ liệu là vì các hoạt động bất đồng bộ trên ứng dụng nên khi các hoạt động của ứng dụng hoàn tất ta mới thực hiện commit thay đổi dữ liệu.
+```
+```js
+// file .js vuex tuto
+import Vue from 'vue';
+import Vuex from 'vuex'
 
+Vue.use(Vuex)
+
+- state:
+    const state = { count: [1, 2, 3, 4, 5] }
+
+- getters:
+    const getters = {
+        show(state) {
+            return function(val) {
+                 // do something with val
+                return something;
+            }
+        }
+    }
+
+- mutations:
+    mutations = {
+        increment(state, params) { state.count.push(params) }
+    }
+
+- actions:
+    actions = {
+        increment({commit}, params) { commit('increment', params) }
+    }
+
+export default new Vuex.Store({state, getters, mutations, actions})
+
+- component:
+    methods: {
+        HandleIncrement(params) {
+            return this.$store.dispatch('increment', params)
+        },
+        // truyền tham số vào getters
+        ShowGetters(params) {
+            return this.$store.getters['Name_modules/name_getters'](params)
+        }
+    },
+```
+```js
+- Cấu trúc của module:
+    - Khi dự án trở nên lớn hơn `state` được chia sẻ trên các `component` cũng lớn theo, vì vậy để dễ dàng quản lý các `state` vuex cung cấp chức năng modules để chúng ta chia các `state` theo các nhóm khác nhau.
+    - `namespaced: true`: Được sử dụng khi trên các nhóm có các `actions` cùng tên nhau.
+```
+```js
+// file name_modules.js
+export default {namespaced: true, state, getters, mutations, actions}
+
+---
+// file index.js
+import Vue from 'vue';
+import Vuex from 'vuex'
+Vue.use(Vuex)
+export default new Vuex.Store({modules: {tuto: tutorial, otuto: otherTutorial}})
+
+---
+// file components
+methods: {
+    HandleIncrement() {
+        return this.$store.dispatch('Name_modules/actions')
+    },
+},
