@@ -1,5 +1,6 @@
 # Vue notes
 > ## 1. Cài đặt
+---
 ```bash
 - Cần cài đặt nodejs đầu tiên
 - npm sẽ được tích hợp cài sẵn khi cài nodejs
@@ -8,6 +9,7 @@
 - npm run dev
 ```
 > ## 2. Vue syntax and directives
+---
 ``` ts
 - el: '#app'               : Mount với một Dom có id là app
 - v-bind:attribute="value" : Gán giá trị cho thuộc tính attribute của element
@@ -35,8 +37,9 @@
 - v-else                            : Khi condition là false thì element không được render
 - v-show="condition"	            : Khi condition là true thì element sẽ không bị gán `display=none`
 ```
-> ## Vue components and lifeCycle Hooks
-### Component
+> ## 3. Vue components and lifeCycle Hooks
+---
+> ### 3.1 Component
 Được tạo ra nhằm mục đích giảm tối thiểu việc lặp code. Vuejs sử dụng component để tổ chức project. Các component sẽ được tạo ra, gọi tới và render ra màn hình khi vue cần đến chúng. Việc tạo ra và gọi lúc nào là việc của dev.
 ``` js
 - Cấu trúc của một component trong file .vue
@@ -75,7 +78,7 @@ Trên đây là cách phổ biến nhất khi làm việc với vuejs khi chúng
     var com = Vue.component('HelloWorld', {
         template: '<h1>Hello World</h1>'
 ```
-### Data component
+> ### 3.2 Data component
 Cách khai báo thứ 1 và 2 là như nhau, việc dùng `return` để trả về một thuộc tính sẽ có tác dụng mỗi khi một một instance được gọi nó sẽ trả về một data khác nhau vì vậy mà khi các component được sử dụng lại ở nhiều nơi thì nếu một chỗ thay đổi thuộc tính thì những chỗ khác không bị thay đổi cùng.
 
 Cách khai báo thuộc tính thứ 3 sẽ làm cho việc thay đổi thuộc tính của một component trong nhiều nơi khác nhau thay đổi cùng nhau.
@@ -92,7 +95,7 @@ Cách khai báo thuộc tính thứ 3 sẽ làm cho việc thay đổi thuộc t
 
     data: {msg: "Say hello" },
 ```
-### LifeCycle Hooks
+> ### 3.3 LifeCycle Hooks
 ``` js
 - init
     - beforeCreate()   : Chạy khi init một instance, lúc này data và event vẫn chưa được thiết lập
@@ -112,7 +115,8 @@ Cách khai báo thuộc tính thứ 3 sẽ làm cho việc thay đổi thuộc t
     - destroyed()      : Lúc này insrtance đã bị hủy
 ```
 
-> ## Vue props and $emit
+> ## 4. Vue props and $emit
+---
 Props được sử dụng để truyền dữ liệu từ component cha xuống component con, $emit được sử dụng cho mục đích ngược lại.
 ``` js
 - Props:
@@ -177,7 +181,8 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
         <input type="text" v-model="name" v-on:input="onEnterNew">
         <child-form-component v-on:pass-to-parent="changeUsername"></child-form-component>
 ```
-> ## Vue-router
+> ## 5. Vue-router
+---
 - **Note:** vuejs sẽ auto option việc cài đặt vue-route, folder mặc định của nó khi init là route và file index.js
 - Build các route và tạo instance cho route rồi sau đó sử dụng vue instance vào file main.js
 ``` js
@@ -204,7 +209,8 @@ Props được sử dụng để truyền dữ liệu từ component cha xuống
     - sử dụng tag route-link để render link
     - `<router-link v-bind:to="{name: 'user', params: {id: 4}}">user</router-link>`
 ```
-> ## Vuex
+> ## 6. Vuex
+---
 Khi project trở nên lớn hơn thì các component lồng nhau nhiều hơn và việc chia sẻ dữ liệu trên các component sẽ trở nên rất khó. Sử dụng `vuex` để thực hiện chia sẻ chung các `state` trên các component. Vuex sử dụng duy nhất một cây trạng thái để lưu trữ trạng thái và chia sẻ trên các component.
 ```js
 - Cấu trúc của store:
@@ -268,17 +274,36 @@ export default new Vuex.Store({state, getters, mutations, actions})
 // file name_modules.js
 export default {namespaced: true, state, getters, mutations, actions}
 
----
 // file index.js
 import Vue from 'vue';
 import Vuex from 'vuex'
 Vue.use(Vuex)
 export default new Vuex.Store({modules: {tuto: tutorial, otuto: otherTutorial}})
 
----
 // file components
 methods: {
     HandleIncrement() {
         return this.$store.dispatch('Name_modules/actions')
     },
 },
+```
+> ## 7. Filters
+---
+Filter (bộ lọc) được vuejs sử dụng để format các kiểu dữ liệu thường gặp trong project trước khi render ra view.
+```js
+// khai báo thông thường
+// in /filters/index.js
+export default {
+    addDoubleZero: val => val + '00',
+    formatCurrency: (val, str) => val + str,
+}
+
+// in main.js
+import filters from './filters'
+Object.keys(filters).forEach(key => Vue.filter(key, filters[key]));
+
+// use
+<p>{{ name | addDoubleZero }}</p>
+<p>{{ price | formatCurrency('VNĐ') }}</p>
+```
+Tham số đầu tiên sẽ tự động được pass vào `filter`, vd: `price | formatCurrency('VNĐ')` trong đó `formatCurrency: (val, str)` nên price được auto pass vào tham số `val` của hàm formatCurrency

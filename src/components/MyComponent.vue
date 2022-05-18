@@ -20,12 +20,10 @@
                 this.$emit('changeNameParent', this.value)
             }
         },
-
-        
     }
 </script>
-<style>
-    .myComponent input{
-        width:600px;
+<style scoped>
+    .myComponent input {
+        width: 600px;
     }
 </style>

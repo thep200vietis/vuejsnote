@@ -1,10 +1,10 @@
 <template>
-  <div id="app" class="container">
-    <router-link :to="{name: 'tuto-vuex'}">Vue</router-link> <br>
+  <div id="app" class="container body-appear">
+    <!-- <router-link :to="{name: 'tuto-vuex'}">Vue</router-link> <br>
     <router-link :to="{name: 'user', params: {id: 555}}">User link</router-link> <br>
     <router-link :to="{name: 'ex-program'}">Ex program</router-link> <br>
     <router-link :to="{name: 'slot-tuto'}">Slot tutorial</router-link> <br>
-    <router-link :to="{name: 'filter-tuto'}">filter tutorial</router-link> <br>
+    <router-link :to="{name: 'filter-tuto'}">filter tutorial</router-link> <br> -->
     <router-view/> 
   </div>
 </template>
