@@ -1,3 +1,219 @@
+# Laravel
+
+> ## 1. Design patterns
+---
+Các mẫu thiết kế được sử dụng khi giải quyết các vấn đề thường gặp khi lập trình. Mẫu thiết kế giúp code dễ đọc, người đọc sau có thể dễ dàng hình dung ra vấn đề đang xảy ra trên đoạn code hiện tại.
+
+> ### 1.1. Dependency injection
+
+
+
+> ## 2. Service container
+---
+
+
+> ### 2.1. Inversion of control
+
+> ## 3. Service providers
+---
+
+> ## 4. Data Flow
+---
+``` bash
+MVC (Model - View - Controller): Đây là luồng data cơ bản của mô hình MVC, trong đó Model tương tác đọc dữ liệu từ cơ sở dữ liệu truyền xuống Controller, controller sẽ xử lý các hiển thị logic và trả về View để show lên cho user.
+```
+```bash
+- Với các web lớn hơn ta sẽ tổ chức hệ thống Files như sau:
+    - Model: Làm việc với cơ sở dữ liệu tạo khóa, lấy instance, ...
+    - Repository: Là một lớp giữa Model và Controller, chứa các hàm xử lý logic cho Model
+    - Service: Là một Interface chứa các method cần thiết để solve một problem, một service bất kỳ nào implement nó sẽ giải quyết được problem kia.
+    - ServiceImp: Implement Service, sử dụng repository để thao tác logic trên dữ liệu.
+    - Provider: Đăng ký service vào container.
+    - Controller: Thực hiện injection service để xử lý logic và trả về view.
+
+> Tại sao cần phải lằng nhằng vậy? Model là file ORM ánh xạ với cơ sở dữ liệu của hệ thống. Giả sử hệ thống sử dụng MySQL làm cơ sở dữ liệu, thì Model sẽ là file ORM để xử lý với MySQL, hoặc hệ thống sử dụng PostgreSQL làm cơ sở dữ liệu, thì Model sẽ là file ORM để xử lý với PostgreSQL. Như vậy nếu viết các logic get, set, filter dữ liệu trên file model thì khi thay thế cơ sở dữ liệu chúng ta cần phải thay thế toàn bộ logic của controller,.... Vì ORM của từng cơ sở dữ liệu là khác nhau. Khi sử dụng repository thì chúng ta chỉ cần thực hiện viết lại repository của hệ quản trị cơ sở dữ liệu tương ứng.
+```
+
+```php
+// Model
+<?php
+class Book extends Model
+{
+    // ...
+    use SoftDeletes;
+}
+
+// Repository
+// BaseRepository chứa các method xử lý cơ bản chung cho mọi repository
+<?php
+class BaseRepository
+{
+    private $model;
+    public function __construct(Model $model)
+    {
+        $this->model = $model;
+    }
+}
+
+// BookRepository chứa các method xử lý logic cho Book
+<?php
+class BookRepository extends BaseRepository
+{
+    // ...
+    public function __construct(Book $book)
+    {
+        parent::__construct($book);
+    }
+
+    // 
+    public function getAll()
+    {
+        return $this->model->all();
+    }
+}
+
+// Service
+<?php
+interface BookService
+{
+    public function getAll();
+}
+
+// ServiceImp
+<?php
+class BookServiceImpl implements BookService
+{
+    private $bookRepository;
+    public function __construct(BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
+    public function getAll()
+    {
+        return $this->bookRepository->getAll();
+    }
+}
+
+// BookServiceProvider
+<?php
+class BookServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        // bind BookServiceImpl vào BookService
+        $this->app->bind(BookService::class, BookServiceImpl::class);
+    }
+} 
+
+// Controller
+<?php
+class BookController
+{
+    private $service;
+    public function __construct(BookService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function index()
+    {
+        $books = $this->service->getAll();
+        return view('book.index');
+    }
+}
+
+// Ta thấy BookController không dùng BookServiceIml (class) mà dùng BookService (interface) ???. Vì trong BookServiceProvider ta đã bind BookServiceImpl vào BookService. Như này gọi là IOC (Inversion of Control). Bình thường thì sẽ dùng instance của class nhưng h nó gọi interface rồi sử dụng injection để gọi cái được bind sẵn vào interface đó. :)))
+```
+
+> ## 5. View composer
+---
+Khi các view sử dụng chung một biến chúng ta có thể tối ưu vấn đề này bằng cách sử dụng `View composer`, tránh việc phải load một biến nhiều lần. Và các view có thể sử dụng biến một cách tối ưu hơn.
+```php
+// st.1 Tạo một folder để chứa các file view composer, file này sẽ định nghĩa các biến được sử dụng lại cho các view.
+<?php 
+class MyViewComposer
+{
+    public function __construct()
+    {
+        // định nghĩa biến admin_name = 'thephv
+        $this->admin_name = 'thephv';
+    }
+}
+
+// st.2 Tạo file service provider để đăng ký view composer. File MyViewComposer và các view sử dụng chung biến sẽ được khai báo ở đây.
+<?php
+class MyViewComposerServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        view()->composer(
+            [
+                // Tên của các file view sử dụng chung biến được khai báo ở đây.
+                'view-composer-1', 
+                'view-composer-2'
+            ], 
+            // Khai báo class định nghĩa các biến.
+            MyViewComposer::class        
+        );
+    }
+}
+
+// st.3 Đăng ký service và sử dụng
+// nhớ đăng ký service provider trong file app.php
+App\Providers\MyViewComposerServiceProvider::class,
+// Bây giờ các view được khai báo trong hàm boot có thể sử dụng chung biến đã được định nghĩa trên file composer như một biến bth mà không cần thêm method để get hay load nữa.
+{{ $admin_name }}
+```
+
+> ## 6. Facade
+---
+Auth::user(), Route::get(),... là các Facade chúng ta sử dụng thường xuyên. Facade ảo? do sử dụng các magic static function bên trong cấu trúc của nó. Chỉ cần gọi thẳng tên các alias của service để sử dụng các method của nó. Rất tiện và mạnh.
+
+```php
+// st.1 tạo file facade.
+<?php
+class MyFacade extends Facade {
+    public static function getFacadeAccessor() {
+        // facade file trả về bind của service
+        return 'MyFacade';
+    }
+}
+
+// st.2 tạo file chứa phương thức sử dụng
+// class TestMyFacade chưa phương thức sayHi()
+<?php
+class TestMyFacade {
+    public function sayHi() {
+        echo 'Hi';
+    }
+}
+
+// st.3 tạo file service provider để đăng ký facade
+<?php
+class TestFacedeServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->app->bind('MyFacade', function() {
+            return new TestMyFacade;
+        });
+    }
+}
+
+// st.4 khai báo provider và facade trong file app.php
+App\Providers\TestFacedeServiceProvider::class
+
+'aliases' => Facade::defaultAliases()->merge([
+        // MyFacade là tên của facade chúng ta muốn đặt
+        'MyFacade' => 'App\Facades\MyFirstFacade',
+    ])->toArray(),
+
+// st.5 sử dụng facade
+// trong file view
+{{ MyFacade::sayHi() }}
+```
+
 # Vue notes
 > ## 1. Cài đặt
 ---
@@ -253,7 +469,6 @@ Vue.use(Vuex)
     }
 
 export default new Vuex.Store({state, getters, mutations, actions})
-
 - component:
     methods: {
         HandleIncrement(params) {
