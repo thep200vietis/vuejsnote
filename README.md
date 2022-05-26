@@ -522,3 +522,33 @@ Object.keys(filters).forEach(key => Vue.filter(key, filters[key]));
 <p>{{ price | formatCurrency('VNĐ') }}</p>
 ```
 Tham số đầu tiên sẽ tự động được pass vào `filter`, vd: `price | formatCurrency('VNĐ')` trong đó `formatCurrency: (val, str)` nên price được auto pass vào tham số `val` của hàm formatCurrency
+
+
+# SQL
+---
+```sql
+-- use join table
+SELECT employeeNumber, officeCode
+FROM employees
+INNER JOIN offices USING (officeCode)
+WHERE country = 'USA'
+
+-- use standalone subquery
+SELECT employeeNumber, officeCode
+FROM employees
+WHERE officeCode in (
+    SELECT officeCode 
+    FROM offices 
+    WHERE country = 'USA'
+)
+
+-- use EXISTS with correlated subquery
+SELECT employeeNumber, officeCode
+FROM employees
+WHERE exists (
+    SELECT *
+    FROM offices 
+    WHERE officeCode = employees.officeCode AND country = 'USA'
+)
+
+```
